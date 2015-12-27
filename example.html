@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		body{
+			margin:0;
+			padding:0;	
+		}
+		#ptrwrapper{
+			position:absolute;
+			width: 100%;
+			top:0px;
+			margin-top:-100px;
+			-webkit-transform:translate3d(0,0,0);
+			transform:translate3d(0,0,0);
+		}
+
+		#ptrwrapper ul{
+			list-style-type:none;	
+			margin:0;
+			padding:0;
+		}
+
+		#ptrwrapper li{
+			height:30px;
+			padding:10px 0 0 0;
+			border-bottom:1px dotted #000;
+		}
+
+		#notice{
+			position:relative;
+			height:100px;	
+			background-color:#ccc;
+			font-family:Helvetica,Arial,sans-serif;
+			font-size:20px;
+			color:#666;
+			text-shadow:0 1px 1px #fff;
+		}
+
+		#noticewrapper{
+			position:absolute;
+			bottom:10px;
+			width:100%;
+		}
+		#msg{
+			float:left;
+			text-align:center;
+			width:80%;
+		}
+
+		#mycanvas{
+			float:left;
+			opacity:0;
+			transition:opacity .5s linear;
+		}
+
+		.new{
+			opacity:0;
+			-webkit-transform:rotateY(-90deg);
+			transform:rotateY(-90deg);
+			-webkit-transform-style: preserve3d;
+			transform-style: preserve3d;
+		}
+		.cool {
+			opacity:1;
+			-webkit-transition:all .5s linear;
+			transition:all .5s linear;
+			
+			-webkit-transform:rotateY(0deg);
+			transform: rotateY(0deg);		
+			-webkit-transform-style: preserve3d;
+			transform-style: preserve3d;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="src/PullToRefresh.js"></script>
+	<script>
+		window.onload = function() {
+			var ptr = new PTR();
+			ptr.setPullToRefresh('ptrwrapper', callback);
+	
+			//Random callback
+			function callback() {
+				$.get('http://diverse.wedinweb.no/ptr/response.php', {}, function(data) {
+					var html = "";
+					for(var i = 0; i<data.length; i++) {
+						html += '<li class="new">'+data[i]+'</li>';
+					}
+					
+					$('#ptrwrapper ul').prepend(html);
+					
+					setTimeout(function() {$(".new").addClass('cool');}, 1); //Add class when elements have been placed in the DOM
+					
+					//Tell the script that the update is finished
+					ptr.setTopZero();
+				});
+			}
+		}
+	</script>
+</head>
+<body>
+	<div id="ptrwrapper">
+	    <div id="notice">
+	    	<div id="noticewrapper">
+	        	<div id="msg">Pull to refresh</div>
+	        	<canvas width="27" height="27" id="mycanvas"></canvas>
+	        </div>
+	    </div>
+		<ul>
+			<li>1</li>
+		    <li>2</li>
+		    <li>3</li>
+		    <li>4</li>
+		    <li>5</li>
+		</ul>
+	</div>
+</body>
+</html>
